@@ -1,0 +1,25 @@
+# Manipulación de datos y utilidades
+pandas
+numpy
+tqdm
+python-dotenv
+requests
+
+# Procesamiento de imágenes
+Pillow
+
+# Modelos y Machine Learning
+torch
+torchvision
+transformers
+sentence-transformers
+datasets
+
+# Base de datos vectorial
+chromadb
+
+# LLM (Google Gemini)
+google-genai
+
+# Interfaz Web
+streamlit
