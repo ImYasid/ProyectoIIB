@@ -20,6 +20,7 @@ no de herencia forzada).
 """
 
 import logging
+import time
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -155,39 +156,36 @@ class RAGPipeline:
     # ---------------------------------------------------------------
     # Paso 4: generación
     # ---------------------------------------------------------------
-import time
+    def generate_answer(self, query: str, context: str) -> str:
+        """Genera la respuesta final con Gemini aplicando el prompt RAG."""
+        prompt = (
+            "Eres un asistente de compras experto. Responde a la consulta del usuario "
+            "basándote ÚNICAMENTE en el siguiente contexto de productos.\n\n"
+            f"CONTEXTO:\n{context}\n\n"
+            f"PREGUNTA DEL USUARIO: {query}\n\n"
+            "RESPUESTA:"
+        )
 
-def generate_answer(self, query: str, context: str) -> str:
-    """Genera la respuesta final con Gemini aplicando el prompt RAG."""
-    prompt = (
-        "Eres un asistente de compras experto. Responde a la consulta del usuario "
-        "basándote ÚNICAMENTE en el siguiente contexto de productos.\n\n"
-        f"CONTEXTO:\n{context}\n\n"
-        f"PREGUNTA DEL USUARIO: {query}\n\n"
-        "RESPUESTA:"
-    )
-
-    # Reintentos automáticos si la API de Google está sobrecargada (Error 503)
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            response = self.gemini_client.models.generate_content(
-                model=self.gemini_model, contents=prompt
-            )
-            return response.text
-        except Exception as exc:
-            if ("503" in str(exc) or "UNAVAILABLE" in str(exc)) and attempt < max_retries - 1:
-                logger.warning("Gemini API ocupada (503). Reintentando en %d segundos...", (attempt + 1) * 2)
-                time.sleep((attempt + 1) * 2)
-            else:
-                logger.error("Error al generar respuesta con Gemini: %s", exc)
-                return (
-                    "⚠️ **Servidor de Gemini ocupado temporalmente (Error 503).**\n\n"
-                    "Google está experimentando alta demanda en este momento. "
-                    "Por favor, intenta enviar tu pregunta nuevamente en unos segundos."
+        # Reintentos automáticos si la API de Google está sobrecargada (Error 503)
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = self.gemini_client.models.generate_content(
+                    model=self.gemini_model, contents=prompt
                 )
-            
-            
+                return response.text
+            except Exception as exc:
+                if ("503" in str(exc) or "UNAVAILABLE" in str(exc)) and attempt < max_retries - 1:
+                    logger.warning("Gemini API ocupada (503). Reintentando en %d segundos...", (attempt + 1) * 2)
+                    time.sleep((attempt + 1) * 2)
+                else:
+                    logger.error("Error al generar respuesta con Gemini: %s", exc)
+                    return (
+                        "⚠️ **Servidor de Gemini ocupado temporalmente (Error 503).**\n\n"
+                        "Google está experimentando alta demanda en este momento. "
+                        "Por favor, intenta enviar tu pregunta nuevamente en unos segundos."
+                    )
+
     # ---------------------------------------------------------------
     # Orquestación completa (pipeline mínimo del literal d)
     # ---------------------------------------------------------------
@@ -202,7 +200,12 @@ def generate_answer(self, query: str, context: str) -> str:
 
         evidences, expanded_queries = self.retrieve(retrieval_query, top_k=top_k)
         context = self.build_context(evidences)
-        answer = self.generate_answer(query, context)
+        
+        # Si el cliente Gemini falló en cargar, no podemos generar respuesta
+        if self.gemini_client is None:
+            answer = "⚠️ La clave de API de Gemini no está configurada. Mostrando solo resultados recuperados."
+        else:
+            answer = self.generate_answer(query, context)
 
         if self.memory is not None:
             self.memory.add_turn("user", query)

@@ -1,19 +1,14 @@
 """
 app.py
 ======
-Punto de entrada de la interfaz web conversacional (literal e).
-
-Este archivo se mantiene deliberadamente delgado: toda la lógica de
-recuperación/generación vive en src/d_rag_pipeline.py, todo el
-renderizado reutilizable vive en src/e_web_interface.py, y cada
-funcionalidad de excelencia vive en su propio módulo bajo src/extras/.
-app.py solo los conecta según lo que el usuario active en la barra
-lateral.
+Punto de entrada de la interfaz web conversacional.
 
 Ejecución:
     streamlit run app.py
 """
 
+import json
+from pathlib import Path
 import streamlit as st
 
 import config
@@ -22,12 +17,45 @@ from src.c_vector_store import VectorStore
 from src.d_rag_pipeline import RAGPipeline
 from src.e_web_interface import init_session_state, render_chat_message, render_rag_result
 
-st.set_page_config(page_title="RAG Multimodal", page_icon="🔎", layout="wide")
+# Configuración base de la página
+st.set_page_config(page_title="RAG Multimodal", page_icon="🔎", layout="wide", initial_sidebar_state="expanded")
 
+# CSS mínimo solo para ocultar marcas de agua y mejorar un poco los botones
+st.markdown("""
+<style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stButton>button {
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------
-# Recursos pesados (modelo CLIP, cliente ChromaDB): se cargan una sola
-# vez por proceso gracias a @st.cache_resource.
+# Carga de consultas de ejemplo reales del corpus
+# ---------------------------------------------------------------------
+@st.cache_data
+def load_example_queries(limit: int = 6) -> list[str]:
+    """Carga una lista de consultas reales extraídas del dataset."""
+    queries_path = Path("data/qrels/queries.json")
+    if queries_path.exists():
+        try:
+            with open(queries_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return list(data.values())[:limit]
+                elif isinstance(data, list):
+                    return [item.get("query", "") for item in data[:limit]]
+        except Exception:
+            return []
+    return []
+
+# ---------------------------------------------------------------------
+# Recursos pesados (modelo CLIP, cliente ChromaDB)
 # ---------------------------------------------------------------------
 @st.cache_resource(show_spinner="Cargando modelo CLIP y base de datos vectorial...")
 def load_core_resources():
@@ -38,9 +66,7 @@ def load_core_resources():
 
 def build_pipeline(embedder, store, use_reranking, use_query_expansion,
                    use_memory, use_feedback) -> tuple[RAGPipeline, object | None]:
-    """Construye el pipeline RAG activando solo los extras marcados en
-    la barra lateral. Cada extra se importa de forma perezosa (lazy)
-    para no cargar modelos pesados que el usuario no pidió."""
+    """Construye el pipeline RAG activando solo los extras marcados."""
     reranker = None
     if use_reranking:
         from src.extras.reranking import CrossEncoderReranker
@@ -74,60 +100,133 @@ def build_pipeline(embedder, store, use_reranking, use_query_expansion,
 
 def main() -> None:
     init_session_state()
-    st.title("🔎 Sistema de Recuperación de Información Multimodal con RAG")
-    st.caption("Recuperación multimodal (CLIP + ChromaDB) + generación (Gemini)")
-
+    
+    # Validaciones iniciales tempranas
     if not config.CORPUS_MANIFEST_PATH.exists():
-        st.error(
-            "No se encontró el corpus. Ejecuta primero:\n\n"
-            "```\npython scripts/build_corpus.py\npython scripts/index_corpus.py\n```"
-        )
+        st.error("No se encontró el corpus. Ejecuta primero: `python main.py build-corpus`")
         st.stop()
 
     embedder, store = load_core_resources()
     if store.count() == 0:
-        st.error("La base vectorial está vacía. Ejecuta: `python scripts/index_corpus.py`")
+        st.error("La base vectorial está vacía. Ejecuta: `python main.py index`")
         st.stop()
 
-    with st.sidebar:
-        st.header("⚙️ Configuración")
-        top_k = st.slider("Top-k documentos a recuperar", 1, 10, config.TOP_K_DEFAULT)
+    clicked_query = None
 
-        st.subheader("Funcionalidades de excelencia")
-        use_reranking = st.checkbox("Re-ranking (cross-encoder)", value=False)
-        use_query_expansion = st.checkbox("Query Expansion", value=False)
-        use_memory = st.checkbox("Memoria conversacional", value=True)
-        use_feedback = st.checkbox("Relevance Feedback (👍/👎)", value=True)
+    # -----------------------------------------------------------------
+    # Barra Lateral (Sidebar)
+    # -----------------------------------------------------------------
+    with st.sidebar:
+        st.title("⚙️ Configuración")
+        
+        # --- 1. Información del Corpus Activo ---
+        st.subheader("📂 Corpus Activo")
+        st.info(f"**Ruta:** `{config.CORPUS_MANIFEST_PATH}`\n\n**Documentos indexados:** `{store.count()}`")
+
+        # --- 2. Parámetros de Búsqueda ---
+        st.subheader("🔍 Parámetros")
+        top_k = st.slider("Documentos a recuperar (Top-K)", 1, 10, config.TOP_K_DEFAULT)
+
+        # Configuraciones avanzadas ocultas en un desplegable
+        with st.expander("🛠️ Ajustes Avanzados de RAG"):
+            use_reranking = st.checkbox("Re-ranking (Cross-Encoder)", value=False)
+            use_query_expansion = st.checkbox("Expansión de Query", value=False)
+            use_memory = st.checkbox("Memoria conversacional", value=True)
+            use_feedback = st.checkbox("Relevance Feedback (👍/👎)", value=True)
 
         st.divider()
-        st.caption(f"Documentos indexados: {store.count()}")
-        if st.button("🗑️ Limpiar conversación"):
+
+        # --- 3. Historial en la barra lateral ---
+        st.subheader("🕒 Historial de Consultas")
+        # Filtramos solo los mensajes del usuario
+        user_queries = [msg["content"] for msg in st.session_state.chat_history if msg["role"] == "user"]
+        
+        if user_queries:
+            # Mostramos el historial invertido (el más reciente arriba)
+            for q in reversed(user_queries):
+                st.caption(f"• {q}")
+        else:
+            st.caption("No hay consultas recientes.")
+
+        st.write("") # Espaciador
+        
+        # Botón para limpiar
+        if st.button("🗑️ Limpiar conversación", use_container_width=True, type="secondary"):
             st.session_state.chat_history = []
             st.session_state.pop("_memory", None)
             st.rerun()
 
+    # Construir pipeline
     pipeline, feedback_store = build_pipeline(
         embedder, store, use_reranking, use_query_expansion, use_memory, use_feedback
     )
 
-    # --- Historial ---
+    # -----------------------------------------------------------------
+    # Interfaz Principal (Main Layout)
+    # -----------------------------------------------------------------
+    
+    # Pantalla de inicio si el historial está vacío
+    if not st.session_state.chat_history:
+        st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>🔎 Catálogo Inteligente</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: gray; font-size: 1.1rem; margin-bottom: 2rem;'>Encuentra productos utilizando texto e imágenes con inteligencia artificial.</p>", unsafe_allow_html=True)
+        
+        example_queries = load_example_queries(limit=6)
+        if example_queries:
+            st.markdown("### ✨ Sugerencias para empezar")
+            cols = st.columns(2)
+            for idx, q_text in enumerate(example_queries):
+                with cols[idx % 2]:
+                    # Botón que actúa como input
+                    if st.button(f"{q_text}", key=f"hero_btn_{idx}", use_container_width=True):
+                        clicked_query = q_text
+            st.markdown("<br><br>", unsafe_allow_html=True)
+    else:
+        st.title("🔎 Chat Multimodal")
+
+    # --- Cargar visualmente el Historial de Chat ---
     for turn in st.session_state.chat_history:
         if turn["role"] == "user":
             render_chat_message("user", turn["content"])
         else:
             render_rag_result(turn["result"], feedback_store=feedback_store)
 
-    # --- Nueva consulta ---
-    query = st.chat_input("Pregunta algo sobre el catálogo de productos...")
-    if query:
-        st.session_state.chat_history.append({"role": "user", "content": query})
-        render_chat_message("user", query)
+    # --- Input de nueva consulta ---
+    chat_query = st.chat_input("Pregunta algo sobre el catálogo de productos...")
+    active_query = chat_query or clicked_query
 
-        with st.spinner("Recuperando evidencias y generando respuesta..."):
-            result = pipeline.run(query, top_k=top_k)
+    # --- Procesamiento de la consulta ---
+    if active_query:
+        # Añadir al historial
+        st.session_state.chat_history.append({"role": "user", "content": active_query})
+        
+        # Si vino de un botón, renderizar el mensaje antes de cargar la respuesta
+        if clicked_query:
+            render_chat_message("user", active_query)
 
-        st.session_state.chat_history.append({"role": "assistant", "result": result})
-        render_rag_result(result, feedback_store=feedback_store)
+        # Spinner nativo interactivo de Streamlit
+        with st.status("🧠 Analizando catálogo y generando respuesta...", expanded=True) as status:
+            try:
+                st.write("Buscando evidencias en la base vectorial...")
+                result = pipeline.run(active_query, top_k=top_k)
+                
+                # Guardar respuesta
+                st.session_state.chat_history.append({"role": "assistant", "result": result})
+                status.update(label="¡Respuesta lista!", state="complete", expanded=False)
+                
+                # Renderizar la respuesta en pantalla
+                render_rag_result(result, feedback_store=feedback_store)
+                
+                # Refrescar UI si el input vino del botón para actualizar la vista principal
+                if clicked_query:
+                    st.rerun()
+
+            except Exception as e:
+                status.update(label="Error en el procesamiento", state="error", expanded=False)
+                error_msg = str(e)
+                if "503" in error_msg or "UNAVAILABLE" in error_msg:
+                    st.error("⚠️ **Google Gemini está temporalmente sobrecargado.** Por favor, espera unos segundos e intenta de nuevo.")
+                else:
+                    st.error(f"⚠️ **Ocurrió un error técnico:** `{error_msg}`")
 
 
 if __name__ == "__main__":
