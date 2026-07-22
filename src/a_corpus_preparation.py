@@ -173,7 +173,7 @@ def build_multimodal_corpus(
         if image_url and download_images:
             dest = config.IMAGES_DIR / f"{product_id}.jpg"
             if dest.exists() or download_image(image_url, dest):
-                image_path = str(dest)
+                image_path = f"data/corpus/images/{product_id}.jpg"
 
         documents.append(
             CorpusDocument(
