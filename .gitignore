@@ -13,12 +13,6 @@ __pycache__/
 *.pyd
 .pytest_cache/
 
-# Datos, corpus y bases de datos vectoriales
-data/
-*.parquet
-*.jsonl
-*.csv
-
 # Archivos del sistema operativo y editores
 .DS_Store
 Thumbs.db

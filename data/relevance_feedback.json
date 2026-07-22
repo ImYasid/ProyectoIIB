@@ -1,0 +1,22 @@
+[
+  {
+    "query": "1.25 sunglasses for women",
+    "doc_id": "doc_B07RSVC23N",
+    "rating": 1
+  },
+  {
+    "query": "VIKTOR JURGEN Neck Massage Pillow Shiatsu Deep Kneading",
+    "doc_id": "doc_B01DWH11L4",
+    "rating": 1
+  },
+  {
+    "query": "VIKTOR JURGEN Neck Massage Pillow Shiatsu Deep Kneading",
+    "doc_id": "doc_B01DWH11L4",
+    "rating": 1
+  },
+  {
+    "query": "VIKTOR JURGEN Neck Massage Pillow Shiatsu Deep Kneading",
+    "doc_id": "doc_B083DX3V7Z",
+    "rating": -1
+  }
+]
