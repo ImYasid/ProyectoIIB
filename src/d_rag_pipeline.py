@@ -13,10 +13,17 @@ Además, expone explícitamente las "evidencias" usadas (documentos,
 imágenes y puntaje de similitud) para que la interfaz web (literal e)
 pueda mostrarlas y así garantizar la trazabilidad del sistema.
 
-Este módulo se apoya en los módulos de extras (re-ranking, expansión
-de consultas y memoria conversacional) SOLO si se le inyectan; si no,
-funciona con el pipeline base sin ellas (principio de composición,
-no de herencia forzada).
+Adicionalmente, el resultado (`RAGResult`) transporta banderas de
+trazabilidad de las 3 funcionalidades de excelencia, para que la UI
+pueda mostrar explícitamente CUÁNDO y CÓMO se dispararon:
+
+    - `contextualized_query`: si la Memoria Conversacional reformuló
+      la consulta original antes de recuperar (p. ej. "¿y en negro?"
+      -> "almohada VIKTOR JURGEN color negro").
+    - `expanded_queries`: las variantes generadas por Query Expansion.
+    - `feedback_applied`: True si existía Relevance Feedback (👍/👎)
+      previo para esa consulta y por lo tanto el vector de búsqueda
+      fue desplazado con el algoritmo de Rocchio.
 """
 
 import logging
@@ -25,6 +32,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from google import genai
+from google.genai import types  # <-- IMPORTANTE: Para configurar los filtros de seguridad
 
 import config
 from src.b_embeddings import ClipEmbedder
@@ -48,29 +56,24 @@ Reglas:
 
 @dataclass
 class RAGResult:
-    """Resultado completo de una consulta al sistema RAG: la respuesta
-    generada más las evidencias que la sustentan (para trazabilidad)."""
-
     query: str
     answer: str
     evidences: list[RetrievedDocument] = field(default_factory=list)
-    expanded_queries: list[str] = field(default_factory=list)  # si hubo query expansion
+    expanded_queries: list[str] = field(default_factory=list)
+    # --- Trazabilidad de funcionalidades de excelencia (para la UI) ---
+    contextualized_query: Optional[str] = None
+    feedback_applied: bool = False
 
 
 class RAGPipeline:
-    """Orquesta recuperación + generación. Las funcionalidades de
-    excelencia (re-ranker, expansor de consultas, memoria) son
-    opcionales y se inyectan por constructor (inyección de
-    dependencias), para que el pipeline base (70 pts) funcione
-    exactamente igual con o sin ellas."""
-
     def __init__(
         self,
         vector_store: VectorStore,
         embedder: ClipEmbedder,
-        reranker=None,          # src.extras.reranking.CrossEncoderReranker
-        query_expander=None,    # src.extras.query_expansion.QueryExpander
-        memory=None,            # src.extras.conversational_memory.ConversationMemory
+        reranker=None,
+        query_expander=None,
+        memory=None,
+        feedback_store=None,
         gemini_api_key: Optional[str] = config.GEMINI_API_KEY,
         gemini_model: str = config.GEMINI_MODEL,
     ):
@@ -79,22 +82,30 @@ class RAGPipeline:
         self.reranker = reranker
         self.query_expander = query_expander
         self.memory = memory
+        self.feedback_store = feedback_store
 
         if not gemini_api_key:
-            logger.warning(
-                "GEMINI_API_KEY no configurada: el sistema podrá recuperar "
-                "evidencias pero no generará respuestas."
-            )
+            logger.warning("GEMINI_API_KEY no configurada.")
+
         self.gemini_client = genai.Client(api_key=gemini_api_key) if gemini_api_key else None
         self.gemini_model = gemini_model
 
-    # ---------------------------------------------------------------
-    # Paso 2: recuperación
-    # ---------------------------------------------------------------
-    def retrieve(self, query: str, top_k: int = config.TOP_K_DEFAULT) -> tuple[list[RetrievedDocument], list[str]]:
-        """Recupera los documentos más relevantes. Si hay un
-        `query_expander` inyectado, se generan variantes de la consulta
-        y se combinan los resultados (fusión por rango recíproco)."""
+    # ------------------------------------------------------------------
+    # Relevance Feedback: obtiene el vector de consulta, aplicando
+    # Rocchio si existe feedback previo registrado para esa consulta
+    # exacta. Devuelve (vector, feedback_applied: bool).
+    # ------------------------------------------------------------------
+    def _embed_with_feedback(self, query: str):
+        if self.feedback_store is not None:
+            has_feedback = bool(self.feedback_store.get_feedback_for_query(query))
+            if has_feedback:
+                query_vec = self.feedback_store.refine_query_vector(query)
+                return query_vec, True
+        return self.embedder.embed_query(query), False
+
+    def retrieve(
+        self, query: str, top_k: int = config.TOP_K_DEFAULT
+    ) -> tuple[list[RetrievedDocument], list[str], bool]:
         expanded_queries: list[str] = []
 
         if self.query_expander is not None:
@@ -106,43 +117,40 @@ class RAGPipeline:
         fetch_k = top_k * config.RERANK_CANDIDATE_MULTIPLIER if self.reranker else top_k
 
         if len(all_queries) == 1:
-            query_vec = self.embedder.embed_query(query)
+            query_vec, feedback_applied = self._embed_with_feedback(query)
             candidates = self.vector_store.query(query_vec, top_k=fetch_k)
         else:
-            candidates = self._multi_query_retrieve(all_queries, fetch_k)
+            candidates, feedback_applied = self._multi_query_retrieve(all_queries, fetch_k)
 
         if self.reranker is not None:
             candidates = self.reranker.rerank(query, candidates, top_k=top_k)
         else:
             candidates = candidates[:top_k]
 
-        return candidates, expanded_queries
+        return candidates, expanded_queries, feedback_applied
 
-    def _multi_query_retrieve(self, queries: list[str], fetch_k: int) -> list[RetrievedDocument]:
-        """Fusión por rango recíproco (Reciprocal Rank Fusion) de los
-        resultados obtenidos con la consulta original y sus variantes
-        expandidas."""
+    def _multi_query_retrieve(
+        self, queries: list[str], fetch_k: int
+    ) -> tuple[list[RetrievedDocument], bool]:
         rrf_scores: dict[str, float] = {}
         doc_by_id: dict[str, RetrievedDocument] = {}
         k_constant = 60
+        feedback_applied = False
 
         for q in queries:
-            q_vec = self.embedder.embed_query(q)
+            q_vec, q_feedback_applied = self._embed_with_feedback(q)
+            feedback_applied = feedback_applied or q_feedback_applied
+
             results = self.vector_store.query(q_vec, top_k=fetch_k)
             for rank, doc in enumerate(results):
                 rrf_scores[doc.doc_id] = rrf_scores.get(doc.doc_id, 0) + 1.0 / (k_constant + rank)
                 doc_by_id[doc.doc_id] = doc
 
         ranked_ids = sorted(rrf_scores, key=rrf_scores.get, reverse=True)[:fetch_k]
-        return [doc_by_id[i] for i in ranked_ids]
+        return [doc_by_id[i] for i in ranked_ids], feedback_applied
 
-    # ---------------------------------------------------------------
-    # Paso 3: construcción del contexto
-    # ---------------------------------------------------------------
     @staticmethod
     def build_context(evidences: list[RetrievedDocument]) -> str:
-        """Construye automáticamente el bloque de contexto a partir de
-        las evidencias recuperadas, numerándolas para poder citarlas."""
         blocks = []
         for i, doc in enumerate(evidences, start=1):
             snippet = doc.text[: config.MAX_CONTEXT_CHARS_PER_DOC]
@@ -153,11 +161,7 @@ class RAGPipeline:
             )
         return "\n\n".join(blocks) if blocks else "(sin resultados relevantes en el corpus)"
 
-    # ---------------------------------------------------------------
-    # Paso 4: generación
-    # ---------------------------------------------------------------
     def generate_answer(self, query: str, context: str) -> str:
-        """Genera la respuesta final con Gemini aplicando el prompt RAG."""
         prompt = (
             "Eres un asistente de compras experto. Responde a la consulta del usuario "
             "basándote ÚNICAMENTE en el siguiente contexto de productos.\n\n"
@@ -166,13 +170,39 @@ class RAGPipeline:
             "RESPUESTA:"
         )
 
-        # Reintentos automáticos si la API de Google está sobrecargada (Error 503)
+        gemini_config = types.GenerateContentConfig(
+            safety_settings=[
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                    threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                ),
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                ),
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                ),
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                    threshold=types.HarmBlockThreshold.BLOCK_NONE,
+                )
+            ]
+        )
+
         max_retries = 3
         for attempt in range(max_retries):
             try:
                 response = self.gemini_client.models.generate_content(
-                    model=self.gemini_model, contents=prompt
+                    model=self.gemini_model,
+                    contents=prompt,
+                    config=gemini_config
                 )
+
+                if not response.text:
+                    return "⚠️ **Filtro de seguridad de IA activado:** Gemini detectó vocabulario sensible en la descripción de estos productos y bloqueó la generación de la respuesta. Revisa las evidencias mostradas abajo."
+
                 return response.text
             except Exception as exc:
                 if ("503" in str(exc) or "UNAVAILABLE" in str(exc)) and attempt < max_retries - 1:
@@ -182,26 +212,21 @@ class RAGPipeline:
                     logger.error("Error al generar respuesta con Gemini: %s", exc)
                     return (
                         "⚠️ **Servidor de Gemini ocupado temporalmente (Error 503).**\n\n"
-                        "Google está experimentando alta demanda en este momento. "
-                        "Por favor, intenta enviar tu pregunta nuevamente en unos segundos."
+                        "Google está experimentando alta demanda en este momento."
                     )
 
-    # ---------------------------------------------------------------
-    # Orquestación completa (pipeline mínimo del literal d)
-    # ---------------------------------------------------------------
     def run(self, query: str, top_k: int = config.TOP_K_DEFAULT) -> RAGResult:
-        # Si hay memoria conversacional, primero reformulamos la
-        # consulta para que sea autocontenida (p. ej. "¿y en negro?"
-        # -> "mochila impermeable en color negro"), y ES esa consulta
-        # reformulada la que se usa para recuperar y para expandir.
         retrieval_query = query
+        contextualized_query: Optional[str] = None
+
         if self.memory is not None:
             retrieval_query = self.memory.contextualize_query(query)
+            if retrieval_query and retrieval_query.strip() != query.strip():
+                contextualized_query = retrieval_query
 
-        evidences, expanded_queries = self.retrieve(retrieval_query, top_k=top_k)
+        evidences, expanded_queries, feedback_applied = self.retrieve(retrieval_query, top_k=top_k)
         context = self.build_context(evidences)
-        
-        # Si el cliente Gemini falló en cargar, no podemos generar respuesta
+
         if self.gemini_client is None:
             answer = "⚠️ La clave de API de Gemini no está configurada. Mostrando solo resultados recuperados."
         else:
@@ -211,4 +236,11 @@ class RAGPipeline:
             self.memory.add_turn("user", query)
             self.memory.add_turn("assistant", answer)
 
-        return RAGResult(query=query, answer=answer, evidences=evidences, expanded_queries=expanded_queries)
+        return RAGResult(
+            query=query,
+            answer=answer,
+            evidences=evidences,
+            expanded_queries=expanded_queries,
+            contextualized_query=contextualized_query,
+            feedback_applied=feedback_applied,
+        )

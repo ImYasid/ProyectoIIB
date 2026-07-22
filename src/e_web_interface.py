@@ -14,9 +14,16 @@ Requisitos mínimos que cubre este módulo:
     - realizar consultas conversacionales;
     - visualizar la respuesta del asistente;
     - visualizar los documentos e imágenes usados como contexto (evidencias),
-      junto con su puntaje de similitud.
+      junto con su puntaje de similitud;
+    - visualizar de forma EXPLÍCITA cuándo se dispararon las 3
+      funcionalidades de excelencia (Memoria Conversacional, Query
+      Expansion y Relevance Feedback / Rocchio), a partir de las
+      banderas de trazabilidad que trae `RAGResult`.
 """
 
+import uuid
+from typing import Optional
+from pathlib import Path
 import streamlit as st
 
 from src.c_vector_store import RetrievedDocument
@@ -74,18 +81,111 @@ def render_evidence_card(rank: int, doc: RetrievedDocument, query: str,
     st.divider()
 
 
-def render_rag_result(result: RAGResult, feedback_store=None) -> None:
-    """Renderiza la respuesta del asistente y, debajo, la sección de
-    evidencias (trazabilidad recuperación vs. generación)."""
-    render_chat_message("assistant", result.answer)
+def render_extras_traceability(result: RAGResult) -> None:
+    """Dibuja componentes visuales de Streamlit que sirven de EVIDENCIA
+    directa (para presentación/evaluación) de que las 3 funcionalidades
+    de excelencia se ejecutaron sobre esta consulta en particular:
 
+        1. Memoria Conversacional  -> st.info con la consulta reformulada
+        2. Query Expansion (RRF)   -> st.expander con las variantes
+        3. Relevance Feedback      -> st.success si se aplicó Rocchio
+
+    Se llama SIEMPRE antes de mostrar las evidencias recuperadas; cada
+    bloque solo se dibuja si el extra correspondiente realmente se
+    disparó para esta consulta.
+    """
+    # --- 1) Memoria Conversacional ---
+    if result.contextualized_query and result.contextualized_query != result.query:
+        st.info(
+            "🧠 **Memoria Conversacional:** La consulta se contexto-reformuló a: "
+            f"*'{result.contextualized_query}'*"
+        )
+
+    # --- 2) Query Expansion (RRF) ---
     if result.expanded_queries:
-        with st.expander("🔎 Consultas expandidas (Query Expansion)"):
+        with st.expander(
+            f"✨ **Query Expansion (RRF):** Se generaron {len(result.expanded_queries)} "
+            "variantes de búsqueda"
+        ):
+            st.caption(
+                "La consulta original se enriqueció con estas variantes para mejorar "
+                "el recall; los resultados se fusionan con Reciprocal Rank Fusion:"
+            )
             for q in result.expanded_queries:
-                st.write(f"- {q}")
+                st.caption(f"- *{q}*")
 
-    with st.expander(f"📎 Evidencias utilizadas (Top-{len(result.evidences)})", expanded=False):
-        if not result.evidences:
-            st.info("No se recuperó ningún documento relevante del corpus.")
-        for i, doc in enumerate(result.evidences, start=1):
-            render_evidence_card(i, doc, result.query, feedback_store=feedback_store)
+    # --- 3) Relevance Feedback (Rocchio) ---
+    if result.feedback_applied:
+        st.success(
+            "🎯 **Relevance Feedback Activo:** El vector de búsqueda fue modificado "
+            "matemáticamente usando el Algoritmo de Rocchio según tus likes/dislikes previos."
+        )
+
+
+def render_rag_result(result: RAGResult, feedback_store=None) -> None:
+    """Renderiza el resultado del RAG en la interfaz web."""
+    if not result:
+        return
+
+    # Trazabilidad visual de los extras (memoria / expansión / feedback)
+    render_extras_traceability(result)
+
+    st.markdown(result.answer)
+
+    with st.expander(f"📎 Evidencias utilizadas (Top-{len(result.evidences)})"):
+        # Generamos un ID único para este bloque de resultados para que Streamlit no se queje
+        # de llaves duplicadas si la misma búsqueda aparece varias veces en el historial.
+        turn_id = str(uuid.uuid4())[:8]
+
+        for idx, doc in enumerate(result.evidences, start=1):
+            st.markdown(f"**[{idx}] {doc.product_title}**")
+            st.caption(f"Similitud: {doc.score:.3f} &middot; `doc_id: {doc.doc_id}`")
+
+            # Columnas: imagen y texto
+            col1, col2 = st.columns([1, 3])
+
+            with col1:
+                # CORRECCIÓN: leemos la propiedad image_path directamente, usando getattr
+                # para que no falle si en algún punto no existe.
+                img_path = getattr(doc, "image_path", None)
+                if img_path and Path(img_path).exists():
+                    st.image(str(img_path), use_container_width=True)
+                else:
+                    st.caption("(sin imagen)")
+
+            with col2:
+                # Texto truncado para no ensuciar la interfaz
+                snippet = doc.text[:350] + "..." if len(doc.text) > 350 else doc.text
+                st.write(snippet)
+
+                # --- Botones de Relevance Feedback ---
+                if feedback_store is not None:
+                    # Usamos el turn_id en la llave para garantizar que sea única en toda la pantalla
+                    btn_up_key = f"fb_up_{doc.doc_id}_{turn_id}_{idx}"
+                    btn_down_key = f"fb_down_{doc.doc_id}_{turn_id}_{idx}"
+
+                    f_col1, f_col2, _ = st.columns([1, 1, 8])
+
+                    with f_col1:
+                        # Si el feedback_store tiene add_feedback (como en la última versión de extras)
+                        if hasattr(feedback_store, 'add_feedback'):
+                            if st.button("👍", key=btn_up_key, help="Marcar como relevante"):
+                                feedback_store.add_feedback(result.query, doc.doc_id, True)
+                                st.toast("✅ Preferencia guardada para refinar próximas búsquedas.")
+                        # Si tiene record_feedback (como en la versión original)
+                        elif hasattr(feedback_store, 'record_feedback'):
+                            if st.button("👍", key=btn_up_key, help="Marcar como relevante"):
+                                feedback_store.record_feedback(result.query, doc.doc_id, +1)
+                                st.toast("✅ Preferencia guardada.")
+
+                    with f_col2:
+                        if hasattr(feedback_store, 'add_feedback'):
+                            if st.button("👎", key=btn_down_key, help="Marcar como irrelevante"):
+                                feedback_store.add_feedback(result.query, doc.doc_id, False)
+                                st.toast("🚫 Preferencia guardada para filtrar estos resultados.")
+                        elif hasattr(feedback_store, 'record_feedback'):
+                            if st.button("👎", key=btn_down_key, help="Marcar como irrelevante"):
+                                feedback_store.record_feedback(result.query, doc.doc_id, -1)
+                                st.toast("🚫 Preferencia guardada.")
+
+            st.divider()

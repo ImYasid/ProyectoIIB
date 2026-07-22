@@ -94,13 +94,17 @@ def build_pipeline(embedder, store, use_reranking, use_query_expansion,
     pipeline = RAGPipeline(
         vector_store=store, embedder=embedder,
         reranker=reranker, query_expander=query_expander, memory=memory,
+        # IMPORTANTE: se inyecta el feedback_store para que el pipeline
+        # pueda aplicar el algoritmo de Rocchio y marcar
+        # `RAGResult.feedback_applied` cuando corresponda.
+        feedback_store=feedback_store,
     )
     return pipeline, feedback_store
 
 
 def main() -> None:
     init_session_state()
-    
+
     # Validaciones iniciales tempranas
     if not config.CORPUS_MANIFEST_PATH.exists():
         st.error("No se encontró el corpus. Ejecuta primero: `python main.py build-corpus`")
@@ -118,7 +122,7 @@ def main() -> None:
     # -----------------------------------------------------------------
     with st.sidebar:
         st.title("⚙️ Configuración")
-        
+
         # --- 1. Información del Corpus Activo ---
         st.subheader("📂 Corpus Activo")
         st.info(f"**Ruta:** `{config.CORPUS_MANIFEST_PATH}`\n\n**Documentos indexados:** `{store.count()}`")
@@ -134,13 +138,26 @@ def main() -> None:
             use_memory = st.checkbox("Memoria conversacional", value=True)
             use_feedback = st.checkbox("Relevance Feedback (👍/👎)", value=True)
 
+        # --- Indicador de extras activos (trazabilidad a simple vista) ---
+        active_extras = []
+        if use_memory:
+            active_extras.append("🧠 Memoria")
+        if use_query_expansion:
+            active_extras.append("✨ Query Expansion")
+        if use_feedback:
+            active_extras.append("🎯 Relevance Feedback")
+        if use_reranking:
+            active_extras.append("📊 Re-ranking")
+        if active_extras:
+            st.caption("**Extras activos:** " + " · ".join(active_extras))
+
         st.divider()
 
         # --- 3. Historial en la barra lateral ---
         st.subheader("🕒 Historial de Consultas")
         # Filtramos solo los mensajes del usuario
         user_queries = [msg["content"] for msg in st.session_state.chat_history if msg["role"] == "user"]
-        
+
         if user_queries:
             # Mostramos el historial invertido (el más reciente arriba)
             for q in reversed(user_queries):
@@ -149,7 +166,7 @@ def main() -> None:
             st.caption("No hay consultas recientes.")
 
         st.write("") # Espaciador
-        
+
         # Botón para limpiar
         if st.button("🗑️ Limpiar conversación", use_container_width=True, type="secondary"):
             st.session_state.chat_history = []
@@ -164,12 +181,12 @@ def main() -> None:
     # -----------------------------------------------------------------
     # Interfaz Principal (Main Layout)
     # -----------------------------------------------------------------
-    
+
     # Pantalla de inicio si el historial está vacío
     if not st.session_state.chat_history:
         st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>🔎 Catálogo Inteligente</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: gray; font-size: 1.1rem; margin-bottom: 2rem;'>Encuentra productos utilizando texto e imágenes con inteligencia artificial.</p>", unsafe_allow_html=True)
-        
+
         example_queries = load_example_queries(limit=6)
         if example_queries:
             st.markdown("### ✨ Sugerencias para empezar")
@@ -198,7 +215,7 @@ def main() -> None:
     if active_query:
         # Añadir al historial
         st.session_state.chat_history.append({"role": "user", "content": active_query})
-        
+
         # Si vino de un botón, renderizar el mensaje antes de cargar la respuesta
         if clicked_query:
             render_chat_message("user", active_query)
@@ -208,14 +225,15 @@ def main() -> None:
             try:
                 st.write("Buscando evidencias en la base vectorial...")
                 result = pipeline.run(active_query, top_k=top_k)
-                
+
                 # Guardar respuesta
                 st.session_state.chat_history.append({"role": "assistant", "result": result})
                 status.update(label="¡Respuesta lista!", state="complete", expanded=False)
-                
-                # Renderizar la respuesta en pantalla
+
+                # Renderizar la respuesta en pantalla (incluye la trazabilidad
+                # visual de Memoria / Query Expansion / Relevance Feedback)
                 render_rag_result(result, feedback_store=feedback_store)
-                
+
                 # Refrescar UI si el input vino del botón para actualizar la vista principal
                 if clicked_query:
                     st.rerun()
