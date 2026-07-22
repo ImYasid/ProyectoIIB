@@ -153,28 +153,31 @@ def render_rag_result(result: RAGResult, feedback_store=None) -> None:
             col1, col2 = st.columns([1, 3])
 
             with col1:
-                # --- SOLUCIÓN COMPATIBLE CON LINUX / WINDOWS Y URLS ---
+                # --- SOLUCIÓN: Carga directa desde GitHub Raw ---
                 raw_path = getattr(doc, "image_path", None)
                 img_url = getattr(doc, "image_url", None)
                 
                 resolved_img = None
 
                 if raw_path:
-                    path_obj = Path(raw_path)
-                    filename = path_obj.name  # Extrae solo 'B00BXLVIWY.jpg'
-                    relative_path = Path("data/corpus/images") / filename
+                    # 1. Normalizar barras y extraer solo el nombre del archivo (ej: B08G7V2X1N.jpg)
+                    filename = raw_path.replace('\\', '/').split('/')[-1]
+                    
+                    # 2. Construir la URL raw directa a tu repositorio de GitHub
+                    resolved_img = f"https://raw.githubusercontent.com/ImYasid/ProyectoIIB/main/data/corpus/images/{filename}"
 
-                    # 1. Probar ruta tal cual está guardada
-                    if path_obj.exists():
-                        resolved_img = str(path_obj)
-                    # 2. Probar re-armando la ruta relativa en Linux/Streamlit Cloud
-                    elif relative_path.exists():
-                        resolved_img = str(relative_path)
-
-                # 3. Mostrar la imagen resuelta o usar la URL de Amazon
+                # 3. Intentar renderizar la imagen
                 if resolved_img:
-                    st.image(resolved_img, use_container_width=True)
+                    try:
+                        st.image(resolved_img, use_container_width=True)
+                    except Exception:
+                        # Si la imagen no está en GitHub, usar la de Amazon como respaldo
+                        if img_url:
+                            st.image(img_url, use_container_width=True)
+                        else:
+                            st.caption("(imagen rota en repo)")
                 elif img_url:
+                    # Si no había ruta local, pero sí URL en la BD
                     st.image(img_url, use_container_width=True)
                 else:
                     st.caption("(sin imagen)")
