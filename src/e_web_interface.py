@@ -127,65 +127,78 @@ def render_rag_result(result: RAGResult, feedback_store=None) -> None:
     if not result:
         return
 
-    # Trazabilidad visual de los extras (memoria / expansión / feedback)
-    render_extras_traceability(result)
+    # Visualizar trazabilidad de extras si está disponible
+    if hasattr(result, "contextualized_query") or hasattr(result, "feedback_applied"):
+        if hasattr(result, "contextualized_query") and result.contextualized_query and result.contextualized_query != result.query:
+            st.info(f"🧠 **Memoria Conversacional:** Consulta reformulada a: *'{result.contextualized_query}'*")
+        
+        if hasattr(result, "feedback_applied") and result.feedback_applied:
+            st.success("🎯 **Relevance Feedback Activo:** Vector de consulta ajustado con algoritmo de Rocchio.")
 
     st.markdown(result.answer)
 
+    if result.expanded_queries:
+        with st.expander(f"✨ **Query Expansion (RRF):** Se generaron {len(result.expanded_queries)} variantes"):
+            st.caption("Variantes de búsqueda generadas para mejorar la precisión:")
+            for q in result.expanded_queries:
+                st.caption(f"- *{q}*")
+
     with st.expander(f"📎 Evidencias utilizadas (Top-{len(result.evidences)})"):
-        # Generamos un ID único para este bloque de resultados para que Streamlit no se queje
-        # de llaves duplicadas si la misma búsqueda aparece varias veces en el historial.
         turn_id = str(uuid.uuid4())[:8]
 
         for idx, doc in enumerate(result.evidences, start=1):
             st.markdown(f"**[{idx}] {doc.product_title}**")
             st.caption(f"Similitud: {doc.score:.3f} &middot; `doc_id: {doc.doc_id}`")
 
-            # Columnas: imagen y texto
             col1, col2 = st.columns([1, 3])
 
             with col1:
-                # CORRECCIÓN: leemos la propiedad image_path directamente, usando getattr
-                # para que no falle si en algún punto no existe.
-                img_path = getattr(doc, "image_path", None)
-                if img_path and Path(img_path).exists():
-                    st.image(str(img_path), use_container_width=True)
+                # --- SOLUCIÓN COMPATIBLE CON LINUX / WINDOWS Y URLS ---
+                raw_path = getattr(doc, "image_path", None)
+                img_url = getattr(doc, "image_url", None)
+                
+                resolved_img = None
+
+                if raw_path:
+                    path_obj = Path(raw_path)
+                    filename = path_obj.name  # Extrae solo 'B00BXLVIWY.jpg'
+                    relative_path = Path("data/corpus/images") / filename
+
+                    # 1. Probar ruta tal cual está guardada
+                    if path_obj.exists():
+                        resolved_img = str(path_obj)
+                    # 2. Probar re-armando la ruta relativa en Linux/Streamlit Cloud
+                    elif relative_path.exists():
+                        resolved_img = str(relative_path)
+
+                # 3. Mostrar la imagen resuelta o usar la URL de Amazon
+                if resolved_img:
+                    st.image(resolved_img, use_container_width=True)
+                elif img_url:
+                    st.image(img_url, use_container_width=True)
                 else:
                     st.caption("(sin imagen)")
 
             with col2:
-                # Texto truncado para no ensuciar la interfaz
                 snippet = doc.text[:350] + "..." if len(doc.text) > 350 else doc.text
                 st.write(snippet)
 
-                # --- Botones de Relevance Feedback ---
                 if feedback_store is not None:
-                    # Usamos el turn_id en la llave para garantizar que sea única en toda la pantalla
                     btn_up_key = f"fb_up_{doc.doc_id}_{turn_id}_{idx}"
                     btn_down_key = f"fb_down_{doc.doc_id}_{turn_id}_{idx}"
 
                     f_col1, f_col2, _ = st.columns([1, 1, 8])
 
                     with f_col1:
-                        # Si el feedback_store tiene add_feedback (como en la última versión de extras)
-                        if hasattr(feedback_store, 'add_feedback'):
-                            if st.button("👍", key=btn_up_key, help="Marcar como relevante"):
-                                feedback_store.add_feedback(result.query, doc.doc_id, True)
-                                st.toast("✅ Preferencia guardada para refinar próximas búsquedas.")
-                        # Si tiene record_feedback (como en la versión original)
-                        elif hasattr(feedback_store, 'record_feedback'):
-                            if st.button("👍", key=btn_up_key, help="Marcar como relevante"):
+                        if hasattr(feedback_store, "record_feedback"):
+                            if st.button("👍", key=btn_up_key):
                                 feedback_store.record_feedback(result.query, doc.doc_id, +1)
-                                st.toast("✅ Preferencia guardada.")
+                                st.toast("✅ Voto positivo registrado.")
 
                     with f_col2:
-                        if hasattr(feedback_store, 'add_feedback'):
-                            if st.button("👎", key=btn_down_key, help="Marcar como irrelevante"):
-                                feedback_store.add_feedback(result.query, doc.doc_id, False)
-                                st.toast("🚫 Preferencia guardada para filtrar estos resultados.")
-                        elif hasattr(feedback_store, 'record_feedback'):
-                            if st.button("👎", key=btn_down_key, help="Marcar como irrelevante"):
+                        if hasattr(feedback_store, "record_feedback"):
+                            if st.button("👎", key=btn_down_key):
                                 feedback_store.record_feedback(result.query, doc.doc_id, -1)
-                                st.toast("🚫 Preferencia guardada.")
+                                st.toast("🚫 Voto negativo registrado.")
 
             st.divider()
