@@ -1,614 +1,473 @@
 {
-  "101": {
-    "doc_B0921F3JTF": 3
+  "978": {
+    "doc_B08C2FTNJ8": 2,
+    "doc_B07VDH3B1Q": 3,
+    "doc_B07TFKJSN5": 2,
+    "doc_B07RSVC23N": 3,
+    "doc_B07RJ9TX13": 3,
+    "doc_B07MN1GKJ5": 3,
+    "doc_B07DDDW2QV": 3,
+    "doc_B07215KNBH": 3,
+    "doc_B01MTVBGBG": 2,
+    "doc_B01HHB9T4M": 3,
+    "doc_B01CZN30J2": 3,
+    "doc_B016J7E3PA": 3
   },
-  "533": {
-    "doc_B08KD6SVPV": 3
+  "4003": {
+    "doc_B07L5B43XX": 3,
+    "doc_B07LFGQT5Z": 3,
+    "doc_B07MJRXQRN": 3,
+    "doc_B07PQ4V668": 3,
+    "doc_B07S1K9YVC": 3,
+    "doc_B07Y7WFJ64": 3,
+    "doc_B081W5Z417": 3,
+    "doc_B082KQL3BT": 2,
+    "doc_B08XWZY4HJ": 3,
+    "doc_B08BFGZF4S": 3,
+    "doc_B08CK9V31S": 2,
+    "doc_B08Z4KCD62": 3
   },
-  "563": {
-    "doc_B08G7V2X1N": 2
+  "4293": {
+    "doc_B07SD9NRRV": 2,
+    "doc_B07RRXC7X2": 3,
+    "doc_B07QG3Y1QY": 2,
+    "doc_B07Q1DCPG5": 1,
+    "doc_B07BG23LNT": 2,
+    "doc_B0747G3F76": 3,
+    "doc_B01DAIAK9Y": 3,
+    "doc_B07RCP9DWL": 2,
+    "doc_B010P0JXUC": 2,
+    "doc_B00EC8N35U": 3,
+    "doc_B0051PTL4U": 3,
+    "doc_B000ZOH7IY": 3
   },
-  "2054": {
-    "doc_B01G7SG9RG": 3,
-    "doc_B00TXGCWBC": 2
-  },
-  "3972": {
-    "doc_B07R4C5QCW": 3,
-    "doc_B07J18XVVW": 3,
-    "doc_B07G67GVDM": 3
-  },
-  "4445": {
-    "doc_B07CJRVCMH": 2,
-    "doc_B07B2HHN1C": 0
-  },
-  "5079": {
-    "doc_B0013BG2GG": 3
+  "4820": {
+    "doc_B07YM3P69M": 3,
+    "doc_B07HYKDH82": 3,
+    "doc_B07JB8D8PS": 3,
+    "doc_B07NWYP425": 3,
+    "doc_B07P7KKGXM": 0,
+    "doc_B07THSLBB2": 0,
+    "doc_B07V8SL9Z8": 3,
+    "doc_B084YV817D": 3,
+    "doc_B08WJJJTY8": 3,
+    "doc_B086KM8V49": 0,
+    "doc_B086L16L4J": 0
   },
   "5112": {
+    "doc_B07J25XVSR": 0,
+    "doc_B085MXS427": 3,
+    "doc_B07TN5N7K3": 3,
+    "doc_B07QBXRJQT": 0,
+    "doc_B08BY9KDJ9": 3,
+    "doc_B07NW76SSX": 3,
     "doc_B07J1CVPDM": 0,
-    "doc_B07D2C9LF3": 3
-  },
-  "5706": {
-    "doc_B08HSRCL1Q": 3
-  },
-  "6411": {
-    "doc_B07RR99S2Q": 2
-  },
-  "7158": {
-    "doc_B07QC54NP4": 3
-  },
-  "7493": {
-    "doc_B08312KYYG": 3
-  },
-  "8543": {
-    "doc_B07PX491V4": 3
-  },
-  "8604": {
-    "doc_B07SYNRKCT": 3,
-    "doc_B0831V16JH": 3
-  },
-  "9215": {
-    "doc_B07Q3Q6S3F": 2
-  },
-  "9701": {
-    "doc_B07GV9QTQY": 0
-  },
-  "9806": {
-    "doc_B084ZYL2CQ": 2,
-    "doc_B00GY1DWUO": 2
-  },
-  "9948": {
-    "doc_B0776KXZD9": 2
-  },
-  "10297": {
-    "doc_B07YDXTN7K": 3
-  },
-  "11970": {
-    "doc_B07MSFY26Q": 2,
-    "doc_B07R4T88PH": 3
-  },
-  "11983": {
-    "doc_B07ZPQ1SM6": 3
-  },
-  "12182": {
-    "doc_B083JKNSC5": 3
-  },
-  "12247": {
-    "doc_B082TDTJRF": 3
-  },
-  "12571": {
-    "doc_B082D7TW1K": 3
-  },
-  "13485": {
-    "doc_B07SSX5YC2": 3
-  },
-  "13498": {
-    "doc_B001DRNLE6": 0
-  },
-  "14739": {
-    "doc_B071VBV18X": 2
+    "doc_B01N4W177I": 0,
+    "doc_B07D2C9LF3": 3,
+    "doc_B07CJ95YX5": 3,
+    "doc_B075CLKMB5": 0,
+    "doc_B01HT2MS6K": 3
   },
   "14932": {
-    "doc_B07CQ1XP6S": 3
-  },
-  "15788": {
-    "doc_B08R77HFN7": 2,
-    "doc_B08RXWRH9V": 2
+    "doc_B089N62PC9": 2,
+    "doc_B07XZLKDTC": 3,
+    "doc_B07G5MQ7CV": 2,
+    "doc_B07CQ1XP6S": 3,
+    "doc_B077BGJLCX": 3,
+    "doc_B076MQT7BN": 3,
+    "doc_B0746Y8WFM": 3,
+    "doc_B07WLTX96R": 3,
+    "doc_B0746V5NBX": 2,
+    "doc_B072RCM8TV": 2,
+    "doc_B01MTKSEVT": 3,
+    "doc_B01MQUA6DD": 3
   },
   "15854": {
+    "doc_B07WXT6MM6": 0,
+    "doc_B07PXP7B2C": 0,
     "doc_B079Q7BYNH": 0,
-    "doc_B01AWK32HA": 0
+    "doc_B0788Y6L34": 0,
+    "doc_B076WV1C8S": 0,
+    "doc_B06ZYN5Q8V": 0,
+    "doc_B01MYZW4AC": 0,
+    "doc_B01MRKM3CG": 0,
+    "doc_B01LWSYPA4": 0,
+    "doc_B01AWK32HA": 0,
+    "doc_B013UGLS7E": 3,
+    "doc_B00ZRMI4OK": 0
   },
   "15989": {
-    "doc_B082M9QJ22": 3
+    "doc_B082M9QJ22": 3,
+    "doc_B07WV3S4RP": 3,
+    "doc_B07Q63HHKJ": 2,
+    "doc_B07F3F88TH": 1,
+    "doc_B07DCQYHK6": 3,
+    "doc_B07C93GMW5": 3,
+    "doc_B07BNQ9S95": 3,
+    "doc_B07BNRG6BG": 3,
+    "doc_B01MTYG7IB": 1,
+    "doc_B01DT0K610": 3,
+    "doc_B018B8PQYM": 3
   },
-  "16451": {
-    "doc_B01GCLYV5K": 3
+  "17287": {
+    "doc_B07T5HYV75": 3,
+    "doc_B07S42W1BB": 3,
+    "doc_B07RN2RM5Y": 3,
+    "doc_B07M865YMJ": 3,
+    "doc_B07MJM6SBP": 3,
+    "doc_B07RHQCZN5": 3,
+    "doc_B07YGP42ZX": 3,
+    "doc_B0848HG9ZT": 3,
+    "doc_B0813ZXWB3": 3
   },
-  "16657": {
-    "doc_B07S2HKTFL": 3
+  "17335": {
+    "doc_B07BC48C18": 2,
+    "doc_B07SYVDMHK": 3,
+    "doc_B07SYVCYVY": 3,
+    "doc_B07N8HC4BC": 3,
+    "doc_B07MWQ4KBV": 3,
+    "doc_B07JHHM1BM": 2,
+    "doc_B07G4PDVPJ": 2,
+    "doc_B078WFJL3J": 2,
+    "doc_B06WCZN1J4": 2,
+    "doc_B078N6Y5MN": 3,
+    "doc_B078KGWP98": 2,
+    "doc_B076QH694V": 2
   },
-  "16709": {
-    "doc_B07HFG36CG": 3,
-    "doc_B07QT9SB16": 0
-  },
-  "17381": {
-    "doc_B0756HRDW5": 3
-  },
-  "17978": {
-    "doc_B07DJMVXJ7": 1
-  },
-  "20281": {
-    "doc_B091F4PVSP": 2
-  },
-  "21029": {
-    "doc_B07VDGLP1C": 3,
-    "doc_B07YVKWT7D": 3,
-    "doc_B006V1RJFG": 3
-  },
-  "22438": {
-    "doc_B087JZY53J": 3,
-    "doc_B07WTPGVD3": 0,
-    "doc_B07VGM9FDR": 3
+  "18995": {
+    "doc_B07NMT1N26": 2,
+    "doc_B082TFY2SC": 2,
+    "doc_B0823C6CW1": 2,
+    "doc_B07TB67ZVL": 2,
+    "doc_B07SBYK3SK": 3,
+    "doc_B07S9WKSBC": 2,
+    "doc_B07L54C3Y1": 2,
+    "doc_B077ZL5FDQ": 2,
+    "doc_B074QP27R5": 2
   },
   "23998": {
+    "doc_B07YV2J62J": 3,
+    "doc_B07WT45LG4": 3,
+    "doc_B07WFSC163": 3,
+    "doc_B07W3SH69B": 3,
+    "doc_B07TWW36K4": 3,
+    "doc_B07TL6YS48": 3,
+    "doc_B07HF5FL3S": 3,
     "doc_B07HDJCYXZ": 3,
-    "doc_B078RHB673": 3
+    "doc_B07FJZBJ2C": 0,
+    "doc_B07F9QJVSG": 3,
+    "doc_B078RHB673": 3,
+    "doc_B01CFHSA0M": 3
   },
-  "24011": {
-    "doc_B086JNZ5LH": 2
-  },
-  "24590": {
-    "doc_B07L5YYJWC": 3
-  },
-  "25652": {
-    "doc_B07K4TGXKL": 3,
-    "doc_B07JL5W998": 3
-  },
-  "26763": {
-    "doc_B07Z657KTL": 3
-  },
-  "27129": {
-    "doc_B077R8X5KR": 2
-  },
-  "27215": {
-    "doc_B071ZRMWBN": 3,
-    "doc_B017POPUTE": 3
+  "26768": {
+    "doc_B00JK960N8": 2,
+    "doc_B07M9SMXSQ": 2,
+    "doc_B07F6DLM8L": 2,
+    "doc_B00NAU9058": 2,
+    "doc_B0078P9D8U": 3,
+    "doc_B001HJFZ4O": 3,
+    "doc_B003L0WE78": 2,
+    "doc_B0055Q2CX2": 2,
+    "doc_B000NBWRU2": 2
   },
   "27489": {
-    "doc_B07MYRDTT9": 3
-  },
-  "27896": {
-    "doc_B077S7SHMF": 3
-  },
-  "31012": {
-    "doc_B07VFR336X": 1
-  },
-  "32906": {
-    "doc_B07K7HRMGD": 2
-  },
-  "33133": {
-    "doc_B083DX3V7Z": 3
-  },
-  "33270": {
-    "doc_B00JRH9OKE": 3
+    "doc_B07MYVX6M4": 3,
+    "doc_B07MYRDTT9": 3,
+    "doc_B075JRJCS1": 3,
+    "doc_B01N5KEOOI": 3,
+    "doc_B01LH58TAE": 3,
+    "doc_B016WJYQOI": 3,
+    "doc_B00P913ERQ": 3,
+    "doc_B07THLC891": 2,
+    "doc_B00JCCL1BE": 3,
+    "doc_B00P4J00SY": 3,
+    "doc_B000EP1KI2": 3,
+    "doc_B000GHVZII": 3
   },
   "34456": {
-    "doc_B082BJS7S5": 3
+    "doc_B08DP6K63H": 3,
+    "doc_B08BYPF5CR": 1,
+    "doc_B08BYG1522": 3,
+    "doc_B07VLGKXFV": 3,
+    "doc_B082BJS7S5": 3,
+    "doc_B08DRXBQQT": 2,
+    "doc_B07TJZWRZZ": 3,
+    "doc_B084GXFGZW": 3,
+    "doc_B08G17Z152": 3,
+    "doc_B08TWP9D5L": 3,
+    "doc_B08S3J2SSJ": 2,
+    "doc_B08SW4VGXS": 3
   },
-  "34460": {
-    "doc_B0751H7BNH": 3
-  },
-  "35400": {
-    "doc_B00004UDJQ": 3,
-    "doc_B00004UDJM": 3
-  },
-  "36265": {
-    "doc_B07BGB7TZQ": 3
-  },
-  "36352": {
-    "doc_B0795G4KQ6": 3
-  },
-  "36830": {
-    "doc_B076FN3DZ7": 3
-  },
-  "37012": {
-    "doc_B07H5G8L9X": 3
-  },
-  "37087": {
-    "doc_B0714JFQ7F": 2
-  },
-  "37647": {
-    "doc_B07YTHX8B1": 2
+  "37251": {
+    "doc_B07XJZK4R6": 2,
+    "doc_B0836JWTRR": 1,
+    "doc_B08345Q9BP": 1,
+    "doc_B07Z9C9T42": 1,
+    "doc_B086XJWWJK": 3,
+    "doc_B07XHK1SW1": 3,
+    "doc_B07Z986566": 1,
+    "doc_B07X34Z9SC": 1,
+    "doc_B07WGFF4K4": 1
   },
   "37805": {
-    "doc_B07CMWF18H": 2
+    "doc_B088HJWM21": 3,
+    "doc_B07XXKCJNJ": 3,
+    "doc_B07S49NZZ4": 3,
+    "doc_B07QKMM1K6": 2,
+    "doc_B07GGPY2V7": 2,
+    "doc_B07L2XDKTX": 2,
+    "doc_B07DFF2F9W": 2,
+    "doc_B07CMWF18H": 2,
+    "doc_B07CHYHQ33": 2
   },
-  "38169": {
-    "doc_B07N84V7PN": 3
+  "38214": {
+    "doc_B085P9YGDX": 3,
+    "doc_B07WHSV7H1": 3,
+    "doc_B07KY8VX1P": 3,
+    "doc_B07GVT431T": 3,
+    "doc_B01MA5XKOW": 3,
+    "doc_B01EXHK68Q": 3,
+    "doc_B017DC51HE": 3,
+    "doc_B00Y43PLKS": 2,
+    "doc_B00GXW14MW": 3,
+    "doc_B007215TF6": 3
   },
   "38718": {
-    "doc_B08876SXFR": 3
+    "doc_B017MYZS9O": 3,
+    "doc_B084HMNRFC": 3,
+    "doc_B07PX84TF7": 3,
+    "doc_B01GWD170K": 3,
+    "doc_B01BMW2U98": 3,
+    "doc_B01BMW2PW0": 3,
+    "doc_B00MU2O3H2": 3,
+    "doc_B08876SXFR": 3,
+    "doc_B00EFZR86U": 3,
+    "doc_B00D2K2YT0": 3,
+    "doc_B00CTHSTYQ": 3,
+    "doc_B00858L094": 3
   },
-  "38977": {
-    "doc_B091G9WGP2": 0
-  },
-  "39380": {
-    "doc_B07213N1FZ": 0
-  },
-  "40627": {
-    "doc_0794502849": 3
-  },
-  "41130": {
-    "doc_B07CZ3YNL5": 0
-  },
-  "41454": {
-    "doc_B07TD2CC2T": 2,
-    "doc_B07S9BQRJW": 2
-  },
-  "41830": {
-    "doc_B07PGBP32T": 3,
-    "doc_B07X7H9HL3": 3
-  },
-  "42043": {
-    "doc_B07XDLXHHT": 3,
-    "doc_B07TKMMM8Y": 3
+  "40249": {
+    "doc_B0779K5GPR": 3,
+    "doc_B082GVRF2J": 2,
+    "doc_B079G4C1S3": 2,
+    "doc_B077BT7SQX": 3,
+    "doc_B077BSSSPK": 3,
+    "doc_B077BD1W1P": 2,
+    "doc_B077BCRKHK": 3,
+    "doc_B0779FXDFD": 2,
+    "doc_B01ECDQ08G": 3,
+    "doc_B01HLXNM4E": 3,
+    "doc_B01HLXLFKM": 3,
+    "doc_B01ECDPGHW": 3
   },
   "42118": {
-    "doc_B07VNPV1GS": 0
-  },
-  "42333": {
-    "doc_B07N7P5VZH": 3
-  },
-  "42637": {
-    "doc_B087X77TWP": 3
-  },
-  "42726": {
-    "doc_0064440583": 3
-  },
-  "42880": {
-    "doc_B00L66KZU2": 3
-  },
-  "44991": {
-    "doc_B07Z67T19Y": 3,
-    "doc_B079SF6VZY": 3
-  },
-  "45175": {
-    "doc_B00BXLVIWY": 0
-  },
-  "45300": {
-    "doc_B01DWH11L4": 3
-  },
-  "45675": {
-    "doc_B07QGTVBV9": 3,
-    "doc_B07G7ZCZTH": 3
-  },
-  "45896": {
-    "doc_B0777JF4YZ": 3
-  },
-  "45930": {
-    "doc_B07Y7Y114W": 2,
-    "doc_B07RZ4GVLQ": 3
-  },
-  "46083": {
-    "doc_B083ZMMZ4N": 3
-  },
-  "46793": {
-    "doc_B07FDB8DBH": 3
+    "doc_B07VYP473P": 0,
+    "doc_B07VNPV1GS": 0,
+    "doc_B07VLF64F2": 0,
+    "doc_B07BVS1L8F": 3,
+    "doc_B01M7MJH68": 0,
+    "doc_B07YDB2PHB": 0,
+    "doc_B007V2DOSA": 3,
+    "doc_B000JD0ZUI": 0,
+    "doc_B000J43E8M": 3
   },
   "47313": {
     "doc_B084Q92WC3": 3,
-    "doc_B07S7MDXGD": 3
+    "doc_B07S7MDXGD": 3,
+    "doc_B07LBY46Q1": 3,
+    "doc_B07KRHG6ZD": 3,
+    "doc_B07KRDM736": 3,
+    "doc_B07JWLMBW6": 3,
+    "doc_B07JW9Q3GJ": 3,
+    "doc_B07D98ZGZ2": 3,
+    "doc_B07CHPZXXQ": 3,
+    "doc_B07CH2165X": 3,
+    "doc_B0721YFMBB": 3,
+    "doc_B009EA1C9A": 3
   },
-  "47531": {
-    "doc_B089DBBMS2": 1
+  "47732": {
+    "doc_B07XTF4ZXD": 3,
+    "doc_B088D5S64N": 3,
+    "doc_B088D3XL59": 3,
+    "doc_B088BHD3V3": 3,
+    "doc_B085BNV5PD": 3,
+    "doc_B085BNTZQG": 3,
+    "doc_B082FHG4K8": 3,
+    "doc_B0824V1ZDN": 3,
+    "doc_B07RRW73YD": 3,
+    "doc_B07R5KXTZT": 3,
+    "doc_B01NBT90ZX": 3,
+    "doc_B00UCR5PJW": 3
   },
-  "47925": {
-    "doc_B07FBX3RC5": 3
+  "47843": {
+    "doc_B07B6VC52M": 2,
+    "doc_B07YW6F452": 2,
+    "doc_B07QQKBC2Z": 2,
+    "doc_B07KWD9N9N": 2,
+    "doc_B07F5HQVQC": 3,
+    "doc_B073311ZS8": 0,
+    "doc_B07X6KVM87": 2,
+    "doc_B01M5HDC2C": 2,
+    "doc_B01933OJ9M": 2
   },
-  "48038": {
-    "doc_B06WGML48P": 3,
-    "doc_B07P1FX1PV": 3
+  "57361": {
+    "doc_B081PV619W": 3,
+    "doc_B0789G8KTG": 3
   },
-  "48971": {
-    "doc_B08H3DSM5D": 3
-  },
-  "49623": {
-    "doc_B0134V3KIA": 3
-  },
-  "50246": {
-    "doc_B074WZ1251": 3
-  },
-  "52400": {
-    "doc_B00HZMZ29U": 2
-  },
-  "52486": {
-    "doc_B08YMSGNFD": 3,
-    "doc_B08ZZ842S2": 3
-  },
-  "53139": {
-    "doc_B085Y5C886": 3,
-    "doc_B07ZHBGT6W": 3
-  },
-  "53453": {
-    "doc_B07L2P26XD": 1
-  },
-  "53538": {
-    "doc_B07R3HYYQC": 3
-  },
-  "55228": {
-    "doc_B083NSWFMN": 3
-  },
-  "56729": {
-    "doc_B074HY18YG": 2
-  },
-  "56936": {
-    "doc_B082PRD87G": 1
-  },
-  "57881": {
-    "doc_B07G5JKF8R": 3
-  },
-  "58230": {
-    "doc_B07K1B4BML": 2,
-    "doc_B076QFT5KC": 3
-  },
-  "61562": {
-    "doc_B07RT1G39Q": 3
-  },
-  "61900": {
-    "doc_B095XJ15JK": 2
-  },
-  "61928": {
-    "doc_B06Y241NW9": 3
-  },
-  "62650": {
-    "doc_B07QR97XQ4": 2
-  },
-  "64469": {
-    "doc_B07MHYSNRJ": 0
-  },
-  "64584": {
-    "doc_B07RPZ4ZT2": 3
-  },
-  "64880": {
-    "doc_B07WRX8BLY": 2
-  },
-  "65044": {
-    "doc_B01N55WT40": 3,
-    "doc_B00S5HLEQE": 3
-  },
-  "67374": {
-    "doc_B0773ZGP6P": 2,
-    "doc_B00NMFDIJ0": 3
-  },
-  "67406": {
-    "doc_B07BTVQWQN": 3,
-    "doc_B008YPDG9A": 3
-  },
-  "67812": {
-    "doc_B07S82L1NF": 3,
-    "doc_B075STPM19": 3
-  },
-  "67900": {
-    "doc_B07S81WVMB": 3,
-    "doc_B0756BTTSM": 0
-  },
-  "67974": {
-    "doc_B083MLWWFF": 3
-  },
-  "68185": {
-    "doc_B078NHYHZ4": 3
-  },
-  "69138": {
-    "doc_B08DP58D7Q": 3
-  },
-  "69139": {
-    "doc_B086XHCF1R": 2
-  },
-  "69240": {
-    "doc_B07XL6Y11Y": 3
-  },
-  "71377": {
-    "doc_B08X7432Y3": 3
+  "57889": {
+    "doc_B087LP5VZF": 0,
+    "doc_B08CBM8PTC": 0,
+    "doc_B08BQ8CTZN": 0,
+    "doc_B089XQRR52": 0,
+    "doc_B089CXDQT5": 3,
+    "doc_B0898S8QYX": 0,
+    "doc_B087QV75SH": 0,
+    "doc_B084WZSP4J": 0,
+    "doc_B002IDH4PQ": 0,
+    "doc_B07SMBC3Q2": 0,
+    "doc_B07KTHL43W": 0,
+    "doc_B075B6S1GD": 0
   },
   "71400": {
-    "doc_B07MXLQFNS": 2
+    "doc_B0856X5SPV": 2,
+    "doc_B082Y789SS": 3,
+    "doc_B08287B6JN": 2,
+    "doc_B07N6Q774Z": 2,
+    "doc_B07MXLQFNS": 2,
+    "doc_B07MK2284T": 3,
+    "doc_B082Y76QYS": 3,
+    "doc_B07BRBGSX2": 2,
+    "doc_B079H9BP8X": 2,
+    "doc_B07768X9FT": 2
   },
-  "71842": {
-    "doc_B07DCFX9TV": 0
+  "71844": {
+    "doc_B08NVGCSKW": 0,
+    "doc_B089VSZT14": 3,
+    "doc_B07MXN684H": 0,
+    "doc_B07KLRQ7G8": 2,
+    "doc_B07CLHJKN5": 3,
+    "doc_B07BW3RVTC": 2,
+    "doc_B01MR52U7T": 0
   },
-  "71873": {
-    "doc_B08CS3N1LH": 3
+  "71990": {
+    "doc_B087PLMR6D": 3,
+    "doc_B08F3G6HYB": 2,
+    "doc_B088YVWG6M": 3,
+    "doc_B088WPH168": 3,
+    "doc_B08FBFC78L": 3,
+    "doc_B0872MRF1X": 3,
+    "doc_B085M147N7": 3
   },
-  "72051": {
-    "doc_B07YFJTTG9": 3
-  },
-  "74347": {
-    "doc_B07M7X8QFB": 3
-  },
-  "76093": {
-    "doc_B07RBR9THT": 3
-  },
-  "76894": {
-    "doc_B07PSF76P5": 3
-  },
-  "77790": {
-    "doc_B07QJG9XPC": 3
-  },
-  "77909": {
-    "doc_B088NJ9YVJ": 3,
-    "doc_B08798C3YC": 3
-  },
-  "79591": {
-    "doc_B07W7TJFJJ": 3
-  },
-  "80366": {
-    "doc_B07X5HZTZQ": 2
-  },
-  "80918": {
-    "doc_B08418864C": 0
-  },
-  "81883": {
-    "doc_B07N8S515Y": 3,
-    "doc_B082562T2N": 3
-  },
-  "82529": {
-    "doc_1524797235": 0
-  },
-  "82640": {
-    "doc_B089QTC2D4": 0
-  },
-  "82750": {
-    "doc_B01N1XZQWK": 3
-  },
-  "83064": {
-    "doc_B07P9DGX13": 3
-  },
-  "83071": {
-    "doc_B07TWJJPZ9": 2
-  },
-  "84124": {
-    "doc_B084FR3VR8": 2,
-    "doc_B085F3FG2B": 3
-  },
-  "85021": {
-    "doc_B07X3YWS3Q": 2
+  "76201": {
+    "doc_B07QY4RWM6": 3,
+    "doc_B07SQZ676L": 3,
+    "doc_B07TVTSHHJ": 3,
+    "doc_B07W5XF2CS": 3,
+    "doc_B07W95LCXX": 3,
+    "doc_B07YN22XH9": 3,
+    "doc_B081CKQYTN": 3,
+    "doc_B087CV1RYR": 3,
+    "doc_B087F4KWN8": 3
   },
   "86040": {
+    "doc_B07ZWKL6WR": 3,
+    "doc_B07YBRLKPX": 3,
+    "doc_B07XZ1D226": 3,
+    "doc_B07VDCJWVL": 3,
+    "doc_B07SKVB4Z8": 3,
     "doc_B07DGS11CM": 3
   },
-  "86444": {
-    "doc_B07J4ZXJJJ": 2
-  },
-  "86649": {
-    "doc_B01AAV73TY": 3
-  },
-  "87118": {
-    "doc_B086L8LD9D": 3,
-    "doc_B07TC5J4W9": 3,
-    "doc_B076Q8SSJG": 3
-  },
-  "88203": {
-    "doc_B00JMI8TTA": 3
-  },
-  "88630": {
-    "doc_B07QFP5G3K": 3
-  },
-  "90174": {
-    "doc_B07GC4KX2Q": 1
-  },
-  "90492": {
-    "doc_B07M5BDZR7": 3,
-    "doc_B01HYVQEW0": 3
-  },
-  "91060": {
-    "doc_B07F1VGDGJ": 3
-  },
-  "91357": {
-    "doc_B087H82ZHT": 3,
-    "doc_B088B4MVPD": 3
-  },
-  "91371": {
-    "doc_B07SSD4Z72": 3
+  "92739": {
+    "doc_B0821KLFB7": 3,
+    "doc_B07RHS3M4G": 3,
+    "doc_B07ZJ25K9D": 3,
+    "doc_B07S1MNCSF": 3,
+    "doc_B07RMZF5WY": 3,
+    "doc_B07RL65DN3": 3,
+    "doc_B07B3SDXXL": 3,
+    "doc_B07BL33X3S": 3,
+    "doc_B07BL17LNC": 3,
+    "doc_B075R7PTFC": 3
   },
   "92780": {
+    "doc_B081RJNG5L": 3,
+    "doc_B07HR7YVN2": 3,
+    "doc_B07D9YHZ87": 3,
+    "doc_B073WJL99W": 3,
+    "doc_B073WJDQMN": 3,
+    "doc_B01M0YFZ9H": 3,
+    "doc_B008DPYSS4": 3,
+    "doc_B00LPD9BDI": 3,
+    "doc_B00GTRKL5W": 3,
+    "doc_B002JP315K": 1,
     "doc_B001R23T44": 3
   },
-  "92828": {
-    "doc_B071F4LYPB": 3
-  },
-  "93543": {
-    "doc_B07D3NRY99": 3
-  },
-  "93611": {
-    "doc_B01LZGWZ06": 3
-  },
-  "93877": {
-    "doc_B07F6TTMHH": 3
-  },
-  "94574": {
-    "doc_B07H3MZ41N": 2
-  },
-  "95267": {
-    "doc_B019QIPZN8": 3
-  },
-  "95917": {
-    "doc_B07YLKFSZH": 2
-  },
-  "98368": {
-    "doc_B07G2T1T4F": 3
-  },
-  "98395": {
-    "doc_B07H6GYC4S": 3,
-    "doc_B07ZCSZVGQ": 3
-  },
-  "99017": {
-    "doc_B07PFG4TB3": 3,
-    "doc_B07GJYWHW6": 3
-  },
-  "99195": {
-    "doc_B01LW05Z2U": 3
-  },
-  "99206": {
-    "doc_B0821DCB1W": 0
-  },
-  "99279": {
-    "doc_B07Y69B58L": 3
-  },
-  "99896": {
-    "doc_B08CC1T7P8": 0
+  "95248": {
+    "doc_B07CD4K7HM": 3,
+    "doc_B076H6F974": 3,
+    "doc_B072BPPSCF": 3
   },
   "100064": {
-    "doc_B07NPC54DK": 3
+    "doc_B07NPC54DK": 3,
+    "doc_B07QLRTGVQ": 2,
+    "doc_B07SZWFGPV": 3,
+    "doc_B0825VCHDG": 1,
+    "doc_B08JZ36B5B": 0,
+    "doc_B08FMX7LW2": 3,
+    "doc_B08JZ6GY5Y": 3
   },
-  "101523": {
-    "doc_B0829FVSFT": 3
+  "100330": {
+    "doc_B08XPN3TZV": 2,
+    "doc_B08HSNRS7X": 2,
+    "doc_B08LGLJBNK": 2,
+    "doc_B08SJF35CR": 2,
+    "doc_B08SPZVPK1": 1,
+    "doc_B08HMCBCVL": 3,
+    "doc_B08ZMW659C": 2,
+    "doc_B0955VL74M": 2,
+    "doc_B0956J6WSR": 2
   },
-  "103421": {
-    "doc_B01HINI3L4": 3
+  "102331": {
+    "doc_B00EQFI8B8": 3,
+    "doc_B00E2RNVT4": 3,
+    "doc_B00E2RG7OU": 3,
+    "doc_B008BMSC2W": 3,
+    "doc_B004SHV2YO": 3,
+    "doc_B0028I4V3Y": 3,
+    "doc_0205927416": 3,
+    "doc_B00EQBXTJS": 3,
+    "doc_0205859070": 3,
+    "doc_0205687407": 3,
+    "doc_0135255198": 3,
+    "doc_0134225732": 3
   },
-  "105065": {
-    "doc_B07CGFC2JF": 3
+  "108662": {
+    "doc_B07SPBSNMQ": 3,
+    "doc_B07RYXNSTK": 3,
+    "doc_B07Q3N55PS": 3,
+    "doc_B07J5TF1VK": 3,
+    "doc_B07GR8X26M": 3,
+    "doc_B07GB8HLKW": 3,
+    "doc_B07TVR4QDK": 3,
+    "doc_B07F93X49G": 3,
+    "doc_B01F8QMALC": 3
   },
-  "106609": {
-    "doc_B07RHY19TL": 2
+  "110346": {
+    "doc_B07P349BRF": 3,
+    "doc_B0765DMYMB": 3,
+    "doc_B0756K2CYN": 3,
+    "doc_B00JU532B0": 3,
+    "doc_B00INEF2LW": 2,
+    "doc_B00FQ566XY": 3,
+    "doc_B003OBXXF6": 3,
+    "doc_B003A47SXU": 3,
+    "doc_B00332F0FM": 3,
+    "doc_B001JEPX44": 3
   },
-  "107733": {
-    "doc_B01I8JMCRI": 2
-  },
-  "108772": {
-    "doc_B01DYDQ706": 3
-  },
-  "109228": {
-    "doc_B07X41BZNM": 0,
-    "doc_B07W3KBRZX": 3
-  },
-  "109691": {
-    "doc_B085ZRKQHP": 3
-  },
-  "110031": {
-    "doc_B08CZ44H5V": 3
-  },
-  "110749": {
-    "doc_B087FDW43B": 3
-  },
-  "111011": {
-    "doc_B07NHZXJKB": 2
-  },
-  "111162": {
-    "doc_B0854H97DC": 3
-  },
-  "111695": {
-    "doc_B07Y26STKQ": 2,
-    "doc_B07W8SVRW3": 3
-  },
-  "112408": {
-    "doc_B07FKKLSNR": 3
-  },
-  "112974": {
-    "doc_B088F11DNB": 3
-  },
-  "113134": {
-    "doc_B07RJBB61H": 3
-  },
-  "113257": {
-    "doc_B07Q61KTXL": 3
-  },
-  "113296": {
-    "doc_B07PV665RJ": 2
-  },
-  "113510": {
-    "doc_B07T1P8R1K": 3
-  },
-  "115019": {
-    "doc_B079W416C6": 3,
-    "doc_B07B8NJGP6": 3
-  },
-  "115248": {
-    "doc_B07QKSRPMC": 3,
-    "doc_B07GQ4RCVN": 3
-  },
-  "115634": {
-    "doc_B08J44JNQS": 3
+  "114317": {
+    "doc_B08231TPSF": 3,
+    "doc_B07XQXZXJC": 3,
+    "doc_B07WDGB9P5": 3,
+    "doc_B07GHWHFR5": 1
   }
 }
