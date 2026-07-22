@@ -96,49 +96,46 @@ Requiere **Python 3.10+**.
 ```bash
 # 1. Crear entorno virtual (recomendado)
 python -m venv venv
-source venv/bin/activate        # En Windows: venv\Scripts\activate
+source venv/bin/activate        # En Windows: source venv\Scripts\activate
 
 # 2. Instalar dependencias
 pip install -r requirements.txt
 
 # 3. Configurar la API key de Gemini
-cp .env.example .env
+echo GEMINI_API_KEY='"AquiPonesTuAPIkey"' > .env
 # Edita .env y pega tu GEMINI_API_KEY
-# (gratuita en https://aistudio.google.com/apikey)
 ```
 
-## Ejecución
+## 🚀 Ejecución 'rápida' del Proyecto
 
-El pipeline se ejecuta en 3 pasos, cada uno independiente y modular:
+### 1. Ejecución rápida
+La forma más sencilla de inicializar el proyecto desde cero es utilizando el orquestador global. Este comando se encargará automáticamente de descargar el corpus, bajar las imágenes, generar los embeddings, crear la base de datos vectorial y ejecutar la evaluación de métricas:
 
 ```bash
-# Paso 1 (literal a): descargar y preparar el corpus multimodal
-python scripts/build_corpus.py --n-queries 40
+python main.py all
+```
 
-# Paso 2 (literales b + c): generar embeddings CLIP e indexar en ChromaDB
-python scripts/index_corpus.py
+### 2. Levantar la interfaz web
+Una vez que la indexación termine y tu terminal marque éxito, puedes lanzar la interfaz conversacional interactiva:
 
-# Paso 3 (literal e): lanzar la interfaz web conversacional
+```bash
 streamlit run app.py
 ```
 
-También puedes usar el orquestador `main.py` (equivalente, más cómodo):
+## 🚀 Ejecución modular del Proyecto
+Si prefieres tener control granular sobre el pipeline o quieres hacer pruebas rápidas con muestras más pequeñas, puedes ejecutar cada paso de forma independiente:
 
 ```bash
+# Paso 1: Descargar y preparar el corpus multimodal (ej. muestra de 40 consultas)
 python main.py build-corpus --n-queries 40
+# Tip: añade la bandera --no-images si quieres omitir la descarga de fotos para pruebas rápidas.
+
+# Paso 2: Generar embeddings CLIP e indexar en ChromaDB
 python main.py index
-python main.py evaluate
-python main.py chat   # imprime el comando de streamlit
+
+# Paso 3: Evaluar el sistema RAG
+python main.py evaluat
 ```
-
-### Evaluación del sistema (literal f)
-
-```bash
-python scripts/run_evaluation.py
-```
-
-Genera `data/eval_results/evaluation_results.csv` con Precision@k, Recall@k
-y NDCG@k (k = 3, 5, 10) por consulta y el promedio general.
 
 ### Funcionalidades de excelencia
 
