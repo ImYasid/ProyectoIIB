@@ -79,9 +79,9 @@ BINARY_RELEVANT_LABELS = {"E", "S"}
 # Muestreo del corpus (para que el proyecto sea manejable en un
 # entorno de estudiante: no se indexan los ~165k productos completos)
 # -----------------------------------------------------------------
-N_QUERIES_SAMPLE = int(os.environ.get("N_QUERIES_SAMPLE", 40))
+N_QUERIES_SAMPLE = int(os.environ.get("N_QUERIES_SAMPLE", 100))
 MAX_PRODUCTS_PER_QUERY = int(os.environ.get("MAX_PRODUCTS_PER_QUERY", 12))
-MAX_TOTAL_PRODUCTS = int(os.environ.get("MAX_TOTAL_PRODUCTS", 300))
+MAX_TOTAL_PRODUCTS = int(os.environ.get("MAX_TOTAL_PRODUCTS", 500))
 DOWNLOAD_IMAGES = os.environ.get("DOWNLOAD_IMAGES", "true").lower() == "true"
 IMAGE_DOWNLOAD_TIMEOUT = 8  # segundos
 RANDOM_SEED = 42
